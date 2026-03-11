@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showroom — EL ZINY | Exotic Cars For Sale</title>
+    <meta name="description" content="Browse EL ZINY's exclusive collection by brand. Lamborghini, Ferrari, Mercedes-AMG, McLaren, Rolls-Royce.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://elziny.com/archive.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* ═══════════════════════════════════════════════
+           BRAND SELECTOR — Full-screen stage 1
+        ═══════════════════════════════════════════════ */
+
+        #brand-selector {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #brand-selector.hiding {
+            opacity: 0;
+            transform: translateY(-2rem);
+            pointer-events: none;
+        }
+        #brand-selector.hidden {
+            display: none;
+        }
+
+        .selector-header {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .selector-eyebrow {
+            font-family: var(--font-sans);
+            font-size: 0.62rem;
+            font-weight: 400;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            margin-left: auto;
+        }
+
+        /* Scrollable brand grid */
+        .brand-grid {
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            scrollbar-width: none;
+        }
+        .brand-grid::-webkit-scrollbar { display: none; }
+
+        .brand-tile {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.04);
+            overflow: hidden;
+            transition: background 0.3s ease;
+            gap: 1.4rem;
+            min-height: 260px;
+            padding: 2.5rem 2rem;
+        }
+
+        /* Car image bleeds in on hover */
+        .brand-tile::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: var(--bg-img);
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            filter: brightness(0.18) saturate(0.4);
+        }
+        .brand-tile:hover::before { opacity: 1; }
+        .brand-tile:hover { background: rgba(255,255,255,0.01); }
+
+        /* Real logo via <img> */
+        .brand-logo {
+            position: relative;
+            z-index: 1;
+            width: 200px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Strip all color, force white at low opacity */
+            filter: grayscale(1) invert(1) brightness(0.45);
+            transition: filter 0.3s ease;
+        }
+        .brand-tile:hover .brand-logo img {
+            filter: grayscale(1) invert(1) brightness(1) drop-shadow(0 0 14px rgba(255,255,255,0.12));
+        }
+
+        .brand-count {
+            position: relative;
+            z-index: 1;
+            font-family: var(--font-sans);
+            font-size: 0.58rem;
+            font-weight: 400;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.18);
+            transition: color 0.3s ease;
+        }
+        .brand-tile:hover .brand-count { color: rgba(255,255,255,0.55); }
+
+        .brand-arrow {
+            position: absolute;
+            bottom: 1.2rem;
+            right: 1.5rem;
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.1);
+            transition: color 0.3s ease, transform 0.3s ease;
+            z-index: 1;
+        }
+        .brand-tile:hover .brand-arrow {
+            color: rgba(255,255,255,0.45);
+            transform: translate(3px, -3px);
+        }
+
+        /* View All tile */
+        .brand-tile.view-all .view-all-text {
+            position: relative;
+            z-index: 1;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.22);
+            transition: color 0.3s ease, letter-spacing 0.3s ease;
+        }
+        .brand-tile.view-all:hover .view-all-text {
+            color: rgba(255,255,255,0.75);
+            letter-spacing: 0.38em;
+        }
+
+        /* ═══════════════════════════════════════════════
+           SHOWROOM — Stage 2 (existing layout)
+        ═══════════════════════════════════════════════ */
+
+        #showroom {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.45s ease 0.2s;
+        }
+        #showroom.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Back to brands button */
+        .back-to-brands {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-sans);
+            font-size: 0.62rem;
+            font-weight: 400;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            margin-left: auto;
+            transition: color 0.2s ease;
+        }
+        .back-to-brands:hover { color: rgba(255,255,255,0.7); }
+        .back-to-brands svg { transition: transform 0.2s ease; }
+        .back-to-brands:hover svg { transform: translateX(-3px); }
+
+        /* Active brand label in header */
+        .active-brand-label {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            margin-left: 1.5rem;
+        }
+
+        /* Sidebar: existing styles handle the rest */
+        .brand-divider {
+            font-family: var(--font-sans);
+            font-size: 0.58rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 1rem 1.5rem 0.4rem;
+        }
+
+        .list-header-simple {
+            padding: 1.5rem 1.5rem 1.25rem;
+        }
+        .list-header-simple .list-label {
+            font-family: var(--font-sans);
+            font-size: 0.65rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            display: block;
+        }
+
+        /* Hide inactive brand groups */
+        .brand-group { display: none; flex-direction: column; }
+        .brand-group.active { display: flex; }
+    </style>
+</head>
+
+<body class="archive-page">
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <div class="page-transition-curtain">
+        <div class="curtain-panel curtain-panel-1"></div>
+        <div class="curtain-panel curtain-panel-2"></div>
+        <div class="curtain-panel curtain-panel-3"></div>
+        <div class="curtain-label">EL ZINY</div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STAGE 1: Brand Selector
+    ══════════════════════════════════════ -->
+    <div id="brand-selector">
+        <div class="selector-header">
+            <a href="index.html" class="logo">EL ZINY</a>
+            <span class="selector-eyebrow">Select a Brand</span>
+        </div>
+
+        <div class="brand-grid">
+
+            <!-- Lamborghini -->
+            <div class="brand-tile" data-brand="lamborghini" style="--bg-img: url('assets/images/huracan_spyder_rear.jpg')">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-lamborghini.svg" alt="Lamborghini">
+                </div>
+                <span class="brand-count">1 vehicle</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- Ferrari -->
+            <div class="brand-tile" data-brand="ferrari" style="--bg-img: url('assets/images/ferrari_812_gts_front.jpg')">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-ferrari.svg" alt="Ferrari">
+                </div>
+                <span class="brand-count">2 vehicles</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- Mercedes-AMG -->
+            <div class="brand-tile" data-brand="mercedes" style="--bg-img: url('assets/images/g63_side_showroom.jpg')">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-mercedes.svg" alt="Mercedes-AMG">
+                </div>
+                <span class="brand-count">1 vehicle</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- McLaren -->
+            <div class="brand-tile" data-brand="mclaren" style="--bg-img: url('assets/images/mclaren_artura_showroom.jpg')">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-mclaren.svg" alt="McLaren">
+                </div>
+                <span class="brand-count">1 vehicle</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- Rolls-Royce -->
+            <div class="brand-tile" data-brand="rolls-royce" style="--bg-img: url('assets/images/cullinan_exterior.png')">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-rolls-royce.svg" alt="Rolls-Royce">
+                </div>
+                <span class="brand-count">1 vehicle</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- Aston Martin -->
+            <div class="brand-tile" data-brand="aston-martin">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-aston-martin.svg" alt="Aston Martin">
+                </div>
+                <span class="brand-count">— vehicles</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- Bentley -->
+            <div class="brand-tile" data-brand="bentley">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-bentley.svg" alt="Bentley">
+                </div>
+                <span class="brand-count">— vehicles</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- Range Rover -->
+            <div class="brand-tile" data-brand="range-rover">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-range-rover.svg" alt="Range Rover">
+                </div>
+                <span class="brand-count">— vehicles</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- Tesla -->
+            <div class="brand-tile" data-brand="tesla">
+                <div class="brand-logo">
+                    <img src="assets/images/logo-tesla.svg" alt="Tesla">
+                </div>
+                <span class="brand-count">— vehicles</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+            <!-- View All -->
+            <div class="brand-tile view-all" data-brand="all">
+                <span class="view-all-text">View All</span>
+                <span class="brand-count">6 vehicles</span>
+                <span class="brand-arrow">↗</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STAGE 2: Showroom
+    ══════════════════════════════════════ -->
+    <main class="archive" id="showroom">
+        <header class="archive-header">
+            <a href="index.html" class="logo">EL ZINY</a>
+            <span class="active-brand-label" id="activeBrandLabel"></span>
+            <button class="back-to-brands" id="backToBrands">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+                </svg>
+                All Brands
+            </button>
+        </header>
+
+        <aside class="project-list">
+            <div class="list-header-simple">
+                <span class="list-label" id="sidebarLabel">Collection</span>
+            </div>
+
+            <!-- ALL group -->
+            <div class="brand-group" id="group-all">
+                <div class="brand-divider">Lamborghini</div>
+                <div class="project-item active" data-project="lambo-huracan">
+                    <div class="project-thumb"><img src="assets/images/huracan_spyder_rear.jpg" alt="Huracán EVO Spyder"></div>
+                    <div class="project-info"><h2 class="project-name">Huracán EVO Spyder</h2></div>
+                </div>
+                <div class="brand-divider">Ferrari</div>
+                <div class="project-item" data-project="ferrari-812-gts">
+                    <div class="project-thumb"><img src="assets/images/ferrari_812_gts_front.jpg" alt="Ferrari 812 GTS"></div>
+                    <div class="project-info"><h2 class="project-name">812 GTS</h2></div>
+                </div>
+                <div class="project-item" data-project="ferrari-purosangue">
+                    <div class="project-thumb"><img src="assets/images/purosangue_side_showroom.jpg" alt="Ferrari Purosangue"></div>
+                    <div class="project-info"><h2 class="project-name">Purosangue</h2></div>
+                </div>
+                <div class="brand-divider">Mercedes-AMG</div>
+                <div class="project-item" data-project="mercedes-g63">
+                    <div class="project-thumb"><img src="assets/images/g63_side_showroom.jpg" alt="Mercedes-AMG G63"></div>
+                    <div class="project-info"><h2 class="project-name">AMG G63</h2></div>
+                </div>
+                <div class="brand-divider">McLaren</div>
+                <div class="project-item" data-project="mclaren-artura">
+                    <div class="project-thumb"><img src="assets/images/mclaren_artura.jpg" alt="McLaren Artura"></div>
+                    <div class="project-info"><h2 class="project-name">Artura</h2></div>
+                </div>
+                <div class="brand-divider">Rolls-Royce</div>
+                <div class="project-item" data-project="rr-cullinan">
+                    <div class="project-thumb"><img src="assets/images/cullinan_exterior.png" alt="Cullinan Black Badge"></div>
+                    <div class="project-info"><h2 class="project-name">Cullinan Black Badge</h2></div>
+                </div>
+            </div>
+
+            <!-- LAMBORGHINI -->
+            <div class="brand-group" id="group-lamborghini">
+                <div class="project-item active" data-project="lambo-huracan">
+                    <div class="project-thumb"><img src="assets/images/huracan_spyder_rear.jpg" alt="Huracán EVO Spyder"></div>
+                    <div class="project-info"><h2 class="project-name">Huracán EVO Spyder</h2></div>
+                </div>
+            </div>
+
+            <!-- FERRARI -->
+            <div class="brand-group" id="group-ferrari">
+                <div class="project-item active" data-project="ferrari-812-gts">
+                    <div class="project-thumb"><img src="assets/images/ferrari_812_gts_front.jpg" alt="Ferrari 812 GTS"></div>
+                    <div class="project-info"><h2 class="project-name">812 GTS</h2></div>
+                </div>
+                <div class="project-item" data-project="ferrari-purosangue">
+                    <div class="project-thumb"><img src="assets/images/purosangue_side_showroom.jpg" alt="Ferrari Purosangue"></div>
+                    <div class="project-info"><h2 class="project-name">Purosangue</h2></div>
+                </div>
+            </div>
+
+            <!-- MERCEDES -->
+            <div class="brand-group" id="group-mercedes">
+                <div class="project-item active" data-project="mercedes-g63">
+                    <div class="project-thumb"><img src="assets/images/g63_side_showroom.jpg" alt="Mercedes-AMG G63"></div>
+                    <div class="project-info"><h2 class="project-name">AMG G63</h2></div>
+                </div>
+            </div>
+
+            <!-- MCLAREN -->
+            <div class="brand-group" id="group-mclaren">
+                <div class="project-item active" data-project="mclaren-artura">
+                    <div class="project-thumb"><img src="assets/images/mclaren_artura.jpg" alt="McLaren Artura"></div>
+                    <div class="project-info"><h2 class="project-name">Artura</h2></div>
+                </div>
+            </div>
+
+            <!-- ROLLS-ROYCE -->
+            <div class="brand-group" id="group-rolls-royce">
+                <div class="project-item active" data-project="rr-cullinan">
+                    <div class="project-thumb"><img src="assets/images/cullinan_exterior.png" alt="Cullinan Black Badge"></div>
+                    <div class="project-info"><h2 class="project-name">Cullinan Black Badge</h2></div>
+                </div>
+            </div>
+
+            <!-- ASTON MARTIN -->
+            <div class="brand-group" id="group-aston-martin">
+            </div>
+
+            <!-- BENTLEY -->
+            <div class="brand-group" id="group-bentley">
+            </div>
+
+            <!-- RANGE ROVER -->
+            <div class="brand-group" id="group-range-rover">
+            </div>
+
+            <!-- TESLA -->
+            <div class="brand-group" id="group-tesla">
+            </div>
+
+        </aside>
+
+        <!-- Vehicle Preview -->
+        <section class="project-view">
+            <div class="view-image">
+                <img src="assets/images/huracan_spyder_rear.jpg" alt="Lamborghini Huracán EVO Spyder">
+            </div>
+            <footer class="view-caption">
+                <header class="caption-header">
+                    <h1 class="view-title">Lamborghini Huracán EVO Spyder</h1>
+                    <span class="view-meta">V10 · 640 HP · Spyder · 2024</span>
+                </header>
+                <p class="view-statement">The open-air evolution of Lamborghini's iconic V10 — 640 naturally aspirated horsepower, pearl white exterior, and a stunning blue Alcantara interior. 0–60 in 3.1 seconds of pure, roofless Italian fury.</p>
+                <a href="project-desert-horizon.html" class="view-project-link" id="view-project-link">View Full Details →</a>
+            </footer>
+        </section>
+
+        <div class="nav-container">
+            <nav class="global-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="archive.html" class="active">Showroom</a></li>
+                    <li><a href="configurator.html">Configure</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+
+    <script src="scripts.js?v=11"></script>
+    <script>
+    (function () {
+        const selector   = document.getElementById('brand-selector');
+        const showroom   = document.getElementById('showroom');
+        const brandLabel = document.getElementById('activeBrandLabel');
+        const sidebarLabel = document.getElementById('sidebarLabel');
+        const backBtn    = document.getElementById('backToBrands');
+
+        const brandNames = {
+            'all':          'All Brands',
+            'lamborghini':  'Lamborghini',
+            'ferrari':      'Ferrari',
+            'mercedes':     'Mercedes-AMG',
+            'mclaren':      'McLaren',
+            'rolls-royce':  'Rolls-Royce',
+            'aston-martin': 'Aston Martin',
+            'bentley':      'Bentley',
+            'range-rover':  'Range Rover',
+            'tesla':        'Tesla'
+        };
+
+        function enterShowroom(brand) {
+            // Show correct group
+            document.querySelectorAll('.brand-group').forEach(g => g.classList.remove('active'));
+            const group = document.getElementById('group-' + brand);
+            if (group) {
+                group.classList.add('active');
+                // Activate first item and fire click for preview
+                const items = group.querySelectorAll('.project-item');
+                items.forEach(i => i.classList.remove('active'));
+                if (items[0]) {
+                    items[0].classList.add('active');
+                    items[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                }
+            }
+
+            // Update labels
+            const name = brandNames[brand] || brand;
+            brandLabel.textContent = name;
+            sidebarLabel.textContent = brand === 'all' ? 'Full Collection' : name + ' Collection';
+
+            // Animate out selector, animate in showroom
+            selector.classList.add('hiding');
+            setTimeout(() => {
+                selector.classList.add('hidden');
+                showroom.classList.add('visible');
+            }, 500);
+        }
+
+        function returnToSelector() {
+            showroom.classList.remove('visible');
+            selector.classList.remove('hidden');
+            // Small delay before re-showing to allow display:none to clear
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    selector.classList.remove('hiding');
+                });
+            });
+        }
+
+        // Brand tile clicks
+        document.querySelectorAll('.brand-tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                enterShowroom(tile.dataset.brand);
+            });
+        });
+
+        // Back button
+        backBtn.addEventListener('click', returnToSelector);
+
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Configurator — Build Your Dream | EL ZINY</title>
+    <meta name="description"
+        content="Configure your perfect exotic automobile with EL ZINY. Choose your model, exterior color, wheel specification and interior trim. Request your bespoke build today.">
+    <meta name="keywords"
+        content="car configurator, exotic car build, Lamborghini configurator, Ferrari configurator, Mercedes G63 configurator, EL ZINY">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://elziny.com/configurator.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="EL ZINY">
+    <meta property="og:title" content="Car Configurator — Build Your Dream | EL ZINY">
+    <meta property="og:description"
+        content="Configure your perfect exotic car. Choose model, color, wheels, and interior trim. Request your bespoke build.">
+    <meta property="og:image" content="https://elziny.com/assets/images/huracan_spyder_rear.jpg">
+    <meta property="og:url" content="https://elziny.com/configurator.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Car Configurator — EL ZINY">
+    <meta name="twitter:description"
+        content="Build your perfect exotic car. Choose model, color, wheels, and interior trim.">
+    <meta name="twitter:image" content="https://elziny.com/assets/images/huracan_spyder_rear.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .configurator-page {
+            background: #0a0908;
+            overflow: hidden;
+        }
+
+        .configurator {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* LEFT PANEL */
+        .config-panel {
+            display: flex;
+            flex-direction: column;
+            background: #0e0d0b;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .config-panel-header {
+            padding: 1.75rem 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .config-panel-header .logo {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--color-cream);
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .config-subtitle {
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .config-progress {
+            display: flex;
+            align-items: center;
+            padding: 1.1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .progress-step {
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.22);
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .progress-step.active {
+            color: var(--color-gold);
+        }
+
+        .progress-step.done {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 0 0.4rem;
+            transition: background 0.4s ease;
+        }
+
+        .progress-line.done {
+            background: rgba(201, 169, 110, 0.4);
+        }
+
+        .config-steps {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            padding: 1.5rem 2rem;
+        }
+
+        .config-steps::-webkit-scrollbar {
+            display: none;
+        }
+
+        .config-step {
+            display: none;
+            animation: stepIn 0.35s ease forwards;
+        }
+
+        .config-step.active {
+            display: block;
+        }
+
+        @keyframes stepIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-heading {
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 1.25rem;
+        }
+
+        /* MODEL CARDS */
+        .model-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .model-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .model-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .model-card.selected {
+            background: rgba(201, 169, 110, 0.06);
+            border-color: var(--color-gold);
+        }
+
+        .model-thumb {
+            width: 68px;
+            height: 44px;
+            border-radius: 2px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .model-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .model-info {
+            flex: 1;
+        }
+
+        .model-name {
+            font-family: var(--font-heading);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--color-cream);
+            margin-bottom: 0.15rem;
+            line-height: 1.2;
+        }
+
+        .model-spec {
+            font-size: 0.58rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .model-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .model-card.selected .model-check {
+            background: var(--color-gold);
+            border-color: var(--color-gold);
+        }
+
+        .model-card.selected .model-check::after {
+            content: '✓';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: #0a0908;
+            font-weight: 700;
+        }
+
+        /* COLOR SWATCHES */
+        .color-swatches {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+        }
+
+        .color-swatch {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .color-swatch:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .color-swatch.selected {
+            border-color: var(--color-gold);
+            background: rgba(201, 169, 110, 0.04);
+        }
+
+        .swatch-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .swatch-text .sw-name {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: block;
+        }
+
+        .swatch-text .sw-label {
+            font-size: 0.56rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.28);
+        }
+
+        /* WHEELS */
+        .wheel-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .wheel-opt {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .wheel-opt:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .wheel-opt.selected {
+            background: rgba(201, 169, 110, 0.06);
+            border-color: var(--color-gold);
+        }
+
+        .wheel-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+            position: relative;
+            transition: border-color 0.25s ease;
+        }
+
+        .wheel-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 1px;
+            height: 60%;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .wheel-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 60%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .wheel-opt.selected .wheel-icon {
+            border-color: var(--color-gold);
+        }
+
+        .wheel-opt.selected .wheel-icon::before,
+        .wheel-opt.selected .wheel-icon::after {
+            background: rgba(201, 169, 110, 0.6);
+        }
+
+        .wheel-info .wh-name {
+            font-family: var(--font-heading);
+            font-size: 0.82rem;
+            color: var(--color-cream);
+            margin-bottom: 0.12rem;
+        }
+
+        .wheel-info .wh-desc {
+            font-size: 0.6rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.28);
+        }
+
+        /* INTERIOR */
+        .interior-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .int-opt {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .int-opt:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .int-opt.selected {
+            background: rgba(201, 169, 110, 0.06);
+            border-color: var(--color-gold);
+        }
+
+        .int-swatch {
+            width: 38px;
+            height: 38px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .int-info .int-name {
+            font-family: var(--font-heading);
+            font-size: 0.82rem;
+            color: var(--color-cream);
+            margin-bottom: 0.12rem;
+            line-height: 1.2;
+        }
+
+        .int-info .int-mat {
+            font-size: 0.6rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.28);
+        }
+
+        /* SUMMARY */
+        .summary-car {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--color-cream);
+            letter-spacing: -0.02em;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .summary-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .sum-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .sum-val {
+            font-family: var(--font-heading);
+            font-size: 0.82rem;
+            color: var(--color-cream);
+            text-align: right;
+        }
+
+        .summary-cta {
+            margin-top: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .btn-request {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--color-gold);
+            color: #0a0908;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-request:hover {
+            background: var(--color-cream);
+            transform: translateY(-1px);
+        }
+
+        .btn-restart {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-restart:hover {
+            color: var(--color-cream);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* NAV BUTTONS */
+        .config-nav-btns {
+            padding: 1.1rem 2rem 16vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .btn-prev,
+        .btn-next {
+            flex: 1;
+            padding: 0.7rem;
+            font-size: 0.62rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-prev {
+            color: rgba(255, 255, 255, 0.35);
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            color: var(--color-cream);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            color: #0a0908;
+            background: var(--color-gold);
+            border: none;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: var(--color-cream);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .no-selection-msg {
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            color: rgba(201, 169, 110, 0.6);
+            text-align: center;
+            padding: 0.4rem 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .no-selection-msg.show {
+            opacity: 1;
+        }
+
+        /* RIGHT PREVIEW */
+        .config-preview {
+            position: relative;
+            overflow: hidden;
+            background: #050504;
+        }
+
+        .preview-img-wrap {
+            position: absolute;
+            inset: 0;
+        }
+
+        #preview-car-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: filter 0.7s ease, opacity 0.45s ease, transform 0.5s ease;
+            filter: saturate(0.8) brightness(0.72);
+        }
+
+        #preview-car-img.switching {
+            opacity: 0;
+            transform: scale(1.03);
+        }
+
+        #preview-car-img.c-white {
+            filter: brightness(1.35) saturate(0.15);
+        }
+
+        #preview-car-img.c-yellow {
+            filter: hue-rotate(38deg) saturate(2.5) brightness(1.02);
+        }
+
+        #preview-car-img.c-green {
+            filter: hue-rotate(92deg) saturate(2) brightness(0.85);
+        }
+
+        #preview-car-img.c-red {
+            filter: saturate(2.3) hue-rotate(-12deg) brightness(0.92);
+        }
+
+        #preview-car-img.c-black {
+            filter: brightness(0.32) saturate(0.4) contrast(1.1);
+        }
+
+        #preview-car-img.c-blue {
+            filter: hue-rotate(205deg) saturate(1.8) brightness(0.72);
+        }
+
+        #preview-car-img.c-grey {
+            filter: saturate(0.18) brightness(0.92);
+        }
+
+        .preview-img-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(to right, rgba(14, 13, 11, 0.55) 0%, transparent 28%, transparent 72%, rgba(5, 5, 4, 0.25) 100%);
+        }
+
+        .preview-img-wrap::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 45%;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(to top, rgba(5, 5, 4, 0.96) 0%, transparent 100%);
+        }
+
+        .preview-glow {
+            position: absolute;
+            bottom: -15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 55%;
+            height: 35%;
+            border-radius: 50%;
+            filter: blur(65px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+            background: #c9a96e;
+            transition: background 0.9s ease, opacity 0.9s ease;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 5;
+            padding: 2.5rem 3rem;
+        }
+
+        .prev-step-label {
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .prev-model-name {
+            font-family: var(--font-heading);
+            font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+            font-weight: 300;
+            color: var(--color-cream);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.4rem;
+            line-height: 1.1;
+            transition: opacity 0.4s ease;
+        }
+
+        .prev-spec {
+            font-size: 0.63rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.38);
+            transition: opacity 0.4s ease;
+        }
+
+        .prev-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.9rem;
+        }
+
+        .prev-tag {
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            padding: 0.28rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .prev-tag.gold {
+            color: var(--color-gold);
+            border-color: rgba(201, 169, 110, 0.3);
+        }
+
+        .preview-step-number {
+            position: absolute;
+            top: 2rem;
+            right: 2.5rem;
+            z-index: 5;
+            text-align: right;
+        }
+
+        .step-big-num {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.05);
+            line-height: 1;
+            letter-spacing: -0.05em;
+        }
+
+        .step-big-of {
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        @media (max-width: 900px) {
+            .configurator {
+                grid-template-columns: 1fr;
+                grid-template-rows: 42vh 1fr;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .config-preview {
+                height: 42vh;
+                grid-row: 1;
+            }
+
+            .config-panel {
+                height: auto;
+                grid-row: 2;
+            }
+
+            .preview-overlay {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="configurator-page">
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <div class="page-transition-curtain">
+        <div class="curtain-panel curtain-panel-1"></div>
+        <div class="curtain-panel curtain-panel-2"></div>
+        <div class="curtain-panel curtain-panel-3"></div>
+        <div class="curtain-label">EL ZINY</div>
+    </div>
+
+    <main class="configurator">
+        <!-- LEFT PANEL -->
+        <aside class="config-panel">
+            <div class="config-panel-header">
+                <a href="index.html" class="logo">EL ZINY</a>
+                <p class="config-subtitle">Build Your Configuration</p>
+            </div>
+
+            <div class="config-progress">
+                <span class="progress-step active" id="ps1">Model</span>
+                <span class="progress-line" id="pl1"></span>
+                <span class="progress-step" id="ps2">Exterior</span>
+                <span class="progress-line" id="pl2"></span>
+                <span class="progress-step" id="ps3">Wheels</span>
+                <span class="progress-line" id="pl3"></span>
+                <span class="progress-step" id="ps4">Interior</span>
+                <span class="progress-line" id="pl4"></span>
+                <span class="progress-step" id="ps5">Summary</span>
+            </div>
+
+            <div class="config-steps">
+                <div class="config-step active" id="step-1">
+                    <p class="step-heading">Choose Your Model</p>
+                    <div class="model-cards" id="model-cards"></div>
+                </div>
+                <div class="config-step" id="step-2">
+                    <p class="step-heading">Exterior Colour</p>
+                    <div class="color-swatches" id="color-swatches"></div>
+                </div>
+                <div class="config-step" id="step-3">
+                    <p class="step-heading">Wheel Specification</p>
+                    <div class="wheel-options" id="wheel-options"></div>
+                </div>
+                <div class="config-step" id="step-4">
+                    <p class="step-heading">Interior Trim</p>
+                    <div class="interior-options" id="interior-options"></div>
+                </div>
+                <div class="config-step" id="step-5">
+                    <p class="step-heading">Your Configuration</p>
+                    <div id="summary-content"></div>
+                </div>
+                <p class="no-selection-msg" id="no-sel-msg">Please make a selection to continue</p>
+            </div>
+
+            <div class="config-nav-btns">
+                <button class="btn-prev" id="btn-prev" disabled>← Back</button>
+                <button class="btn-next" id="btn-next" disabled>Next →</button>
+            </div>
+        </aside>
+
+        <!-- RIGHT PREVIEW -->
+        <section class="config-preview" aria-label="Vehicle preview">
+            <div class="preview-img-wrap">
+                <img id="preview-car-img" src="assets/images/huracan_spyder_rear.jpg" alt="Vehicle preview">
+                <div class="preview-glow" id="preview-glow"></div>
+            </div>
+            <div class="preview-step-number">
+                <div class="step-big-num" id="step-big-num">01</div>
+                <div class="step-big-of">of 04</div>
+            </div>
+            <div class="preview-overlay">
+                <p class="prev-step-label" id="prev-step-label">Select Your Model</p>
+                <h1 class="prev-model-name" id="prev-model-name">EL ZINY Collection</h1>
+                <p class="prev-spec" id="prev-spec">Lamborghini · Ferrari · Mercedes-AMG</p>
+                <div class="prev-tags" id="prev-tags"></div>
+            </div>
+        </section>
+    </main>
+
+    <div class="nav-container">
+        <nav class="global-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="archive.html">Showroom</a></li>
+                <li><a href="configurator.html" class="active">Configure</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+        const CARS = [
+            {
+                id: 'huracan', name: 'Lamborghini Huracán EVO Spyder', shortName: 'Huracán EVO',
+                spec: 'V10 · 5.2L · 640 HP · Spyder', image: 'assets/images/huracan_spyder_rear.jpg',
+                link: 'project-desert-horizon.html',
+                colors: [
+                    { name: 'Bianco Canopus', label: 'Pearl White', hex: '#EDEAE4', fc: 'c-white' },
+                    { name: 'Giallo Orion', label: 'Yellow', hex: '#D4A800', fc: 'c-yellow' },
+                    { name: 'Verde Mantis', label: 'Green', hex: '#2E7040', fc: 'c-green' },
+                    { name: 'Rosso Mars', label: 'Red', hex: '#B52B2B', fc: 'c-red' },
+                ],
+                wheels: [
+                    { name: 'Aero Standard', desc: 'Factory specification' },
+                    { name: 'Forged Sport', desc: 'Lightweight forged alloy' },
+                    { name: 'Carbon Centre-Lock', desc: 'Full carbon flagship' },
+                ],
+                interiors: [
+                    { name: 'Blu Nethuns Alcantara', mat: 'Alcantara & Carbon Fiber', sw: 'linear-gradient(135deg,#1a3a5c,#2d6a9f)' },
+                    { name: 'Nero Full-Leather', mat: 'Full-Grain Nappa', sw: 'linear-gradient(135deg,#1a1a1a,#333)' },
+                    { name: 'Rosso Sport', mat: 'Alcantara & Red Stitching', sw: 'linear-gradient(135deg,#7a1a1a,#c0392b)' },
+                ]
+            },
+            {
+                id: 'ferrari812', name: 'Ferrari 812 GTS', shortName: '812 GTS',
+                spec: 'V12 · 6.5L · 789 HP · Spider', image: 'assets/images/ferrari_812_gts_front.jpg',
+                link: 'project-ferrari-812-gts.html',
+                colors: [
+                    { name: 'Nero Daytona', label: 'Black', hex: '#1C1C1C', fc: 'c-black' },
+                    { name: 'Rosso Corsa', label: 'Racing Red', hex: '#C0392B', fc: 'c-red' },
+                    { name: 'Bianco Avus', label: 'White', hex: '#F0EDE8', fc: 'c-white' },
+                    { name: 'Blu Tour de France', label: 'Blue', hex: '#1a3a6a', fc: 'c-blue' },
+                ],
+                wheels: [
+                    { name: '5-Spoke Forged', desc: 'Factory specification' },
+                    { name: 'Diamond-Cut Sport', desc: 'Polished diamond-turned' },
+                    { name: 'Carbon Race Spec', desc: 'Track-grade carbon weave' },
+                ],
+                interiors: [
+                    { name: 'Teal & Gold Tailor Made', mat: 'Schedoni Leather · Embroidered', sw: 'linear-gradient(135deg,#0d5c5c,#1a8a8a)' },
+                    { name: 'Rosso Dino', mat: 'Full Rosso Leather', sw: 'linear-gradient(135deg,#7a2020,#b03030)' },
+                    { name: 'Cuoio Sabbia', mat: 'Premium Tan Leather', sw: 'linear-gradient(135deg,#5c3a1a,#8a5c2a)' },
+                ]
+            },
+            {
+                id: 'g63', name: 'Mercedes-AMG G63', shortName: 'G63 AMG',
+                spec: 'V8 Biturbo · 4.0L · 577 HP · SUV', image: 'assets/images/g63_side_showroom.jpg',
+                link: 'project-mercedes-g63.html',
+                colors: [
+                    { name: 'Obsidian Black', label: 'Black', hex: '#1C1C1A', fc: 'c-black' },
+                    { name: 'Polar White', label: 'White', hex: '#F0EDE8', fc: 'c-white' },
+                    { name: 'Brillant Blue', label: 'Blue', hex: '#1a2a5a', fc: 'c-blue' },
+                    { name: 'Selenite Grey', label: 'Grey', hex: '#787878', fc: 'c-grey' },
+                ],
+                wheels: [
+                    { name: 'AMG Monoblock', desc: 'Standard AMG specification' },
+                    { name: 'AMG Cross-Spoke', desc: 'Sport performance spec' },
+                    { name: 'Brabus Monoblock', desc: 'Exclusive Brabus upgrade' },
+                ],
+                interiors: [
+                    { name: 'Cognac & Black Quilted', mat: 'Nappa Leather · Quilted', sw: 'linear-gradient(135deg,#5c3a1a,#1a1a1a)' },
+                    { name: 'Nappa Black', mat: 'Full Black Nappa', sw: 'linear-gradient(135deg,#1a1a1a,#333)' },
+                    { name: 'Macchiato Beige', mat: 'Light Nappa Leather', sw: 'linear-gradient(135deg,#c8b89a,#a09070)' },
+                ]
+            },
+            {
+                id: 'purosangue', name: 'Ferrari Purosangue', shortName: 'Purosangue',
+                spec: 'V12 · 6.5L · 725 HP · SUV', image: 'assets/images/purosangue_side_showroom.jpg',
+                link: 'project-ferrari-purosangue.html',
+                colors: [
+                    { name: 'Rosso Ferrari', label: 'Ferrari Red', hex: '#BE2F2F', fc: 'c-red' },
+                    { name: 'Grigio Silverstone', label: 'Grey', hex: '#787878', fc: 'c-grey' },
+                    { name: 'Giallo Modena', label: 'Yellow', hex: '#D4A800', fc: 'c-yellow' },
+                    { name: 'Nero', label: 'Black', hex: '#1C1C1A', fc: 'c-black' },
+                ],
+                wheels: [
+                    { name: '20″ Standard', desc: 'OEM factory specification' },
+                    { name: '22″ Sport', desc: 'Larger sport spec' },
+                    { name: 'Forged Carbon', desc: 'Full carbon lightweight' },
+                ],
+                interiors: [
+                    { name: 'Full Carbon & Red', mat: 'Carbon Fibre · Red Stitching', sw: 'linear-gradient(135deg,#1a1a1a,#8a1a1a)' },
+                    { name: 'Cuoio Leather', mat: 'Premium Tan Leather', sw: 'linear-gradient(135deg,#5c3a1a,#8a5c2a)' },
+                    { name: 'Bianco Pregiato', mat: 'Cream White Leather', sw: 'linear-gradient(135deg,#e8e0d0,#c8bba0)' },
+                ]
+            },
+            {
+                id: 'rr-ghost', name: 'Rolls-Royce Ghost', shortName: 'Ghost',
+                spec: 'V12 · 6.75L · 563 HP · Saloon', image: 'assets/images/rr_ghost_black.png',
+                link: 'contact.html',
+                colors: [
+                    { name: 'Black Badge', label: 'Obsidian Black', hex: '#1C1C1C', img: 'assets/images/rr_ghost_black.png' },
+                    { name: 'Arctic White', label: 'Pearl White', hex: '#F0EDE8', img: 'assets/images/rr_ghost_white.png' },
+                    { name: 'Midnight Blue', label: 'Deep Blue', hex: '#1a2e5a', img: 'assets/images/rr_ghost_blue.png' },
+                    { name: 'Salamanca Blue', label: 'Dark Navy', hex: '#0d1f3c', img: 'assets/images/rr_ghost_navy.png' },
+                ],
+                wheels: [
+                    { name: '21\u2033 Spirit', desc: 'Standard Spirit alloy' },
+                    { name: '21\u2033 Shooting Star', desc: 'Diamond-turned sport spec' },
+                    { name: 'Bespoke Forged', desc: 'Fully bespoke commission' },
+                ],
+                interiors: [
+                    { name: 'Seashell & Navy', mat: 'Natural Grain Leather', sw: 'linear-gradient(135deg,#e8e0d0,#1a2e5a)' },
+                    { name: 'Dark Spice', mat: 'Full-Grain Nappa', sw: 'linear-gradient(135deg,#3a1a0a,#5c3a1a)' },
+                    { name: 'Obsidian Black', mat: 'Nappa & Starlight Headliner', sw: 'linear-gradient(135deg,#1a1a1a,#2d2d2d)' },
+                ]
+            },
+        ];
+
+        const glowColors = { 'c-white': '#d0ccc5', 'c-yellow': '#d4a800', 'c-green': '#2e7040', 'c-red': '#b52b2b', 'c-black': '#333', 'c-blue': '#1a3a6a', 'c-grey': '#787878' };
+
+        let step = 1, selCar = null, selColor = null, selWheel = null, selInterior = null;
+
+        const img = document.getElementById('preview-car-img');
+        const glow = document.getElementById('preview-glow');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const noSelMsg = document.getElementById('no-sel-msg');
+
+        const stepLabels = ['Select Your Model', 'Choose Exterior Colour', 'Wheel Specification', 'Interior Trim', 'Configuration Complete'];
+
+        function updatePreview(newSrc, colorObj) {
+            ['c-white', 'c-yellow', 'c-green', 'c-red', 'c-black', 'c-blue', 'c-grey'].forEach(c => img.classList.remove(c));
+            if (colorObj && colorObj.img) {
+                // Image-swap mode (Rolls-Royce Ghost etc)
+                img.classList.add('switching');
+                setTimeout(() => {
+                    img.src = colorObj.img;
+                    img.onload = () => img.classList.remove('switching');
+                }, 400);
+                glow.style.background = colorObj.hex || '#c9a96e';
+                glow.style.opacity = '0.15';
+            } else {
+                // Standard CSS filter mode
+                if (newSrc) {
+                    img.classList.add('switching');
+                    setTimeout(() => {
+                        img.src = newSrc;
+                        img.onload = () => img.classList.remove('switching');
+                    }, 400);
+                }
+                if (colorObj && colorObj.fc) {
+                    img.classList.add(colorObj.fc);
+                    glow.style.background = glowColors[colorObj.fc] || '#c9a96e';
+                    glow.style.opacity = '0.15';
+                } else {
+                    glow.style.background = '#c9a96e';
+                    glow.style.opacity = '0.12';
+                }
+            }
+        }
+
+        function updateOverlay() {
+            document.getElementById('prev-step-label').textContent = stepLabels[step - 1] || '';
+            document.getElementById('prev-model-name').textContent = selCar ? selCar.name : 'EL ZINY Collection';
+            document.getElementById('prev-spec').textContent = selCar ? selCar.spec : 'Lamborghini · Ferrari · Mercedes-AMG';
+            document.getElementById('step-big-num').textContent = step < 5 ? String(step).padStart(2, '0') : '✓';
+
+            const tags = document.getElementById('prev-tags');
+            tags.innerHTML = '';
+            if (selColor) { const t = document.createElement('span'); t.className = 'prev-tag gold'; t.textContent = selColor.name; tags.appendChild(t); }
+            if (selWheel) { const t = document.createElement('span'); t.className = 'prev-tag'; t.textContent = selWheel.name; tags.appendChild(t); }
+            if (selInterior) { const t = document.createElement('span'); t.className = 'prev-tag'; t.textContent = selInterior.name; tags.appendChild(t); }
+        }
+
+        function updateProgress() {
+            for (let i = 1; i <= 5; i++) {
+                const ps = document.getElementById('ps' + i);
+                ps.className = 'progress-step' + (i === step ? ' active' : i < step ? ' done' : '');
+            }
+            for (let i = 1; i <= 4; i++) {
+                const pl = document.getElementById('pl' + i);
+                pl.className = 'progress-line' + (i < step ? ' done' : '');
+            }
+        }
+
+        function currentSelection() {
+            return [null, selCar, selColor, selWheel, selInterior][step];
+        }
+
+        function goTo(newStep) {
+            document.getElementById('step-' + step).classList.remove('active');
+            step = newStep;
+            document.getElementById('step-' + step).classList.add('active');
+            btnPrev.disabled = step === 1;
+            const hasSel = !!currentSelection();
+            btnNext.disabled = !hasSel || step === 5;
+            noSelMsg.classList.toggle('show', false);
+            updateProgress();
+            updateOverlay();
+            if (step === 5) renderSummary();
+        }
+
+        function renderModelCards() {
+            document.getElementById('model-cards').innerHTML = CARS.map(car => `
+            <div class="model-card ${selCar?.id === car.id ? 'selected' : ''}" data-id="${car.id}">
+                <div class="model-thumb"><img src="${car.image}" alt="${car.name}" loading="lazy"></div>
+                <div class="model-info"><div class="model-name">${car.name}</div><div class="model-spec">${car.spec}</div></div>
+                <div class="model-check"></div>
+            </div>`).join('');
+            document.querySelectorAll('.model-card').forEach(el => {
+                el.addEventListener('click', () => {
+                    selCar = CARS.find(c => c.id === el.dataset.id);
+                    selColor = null; selWheel = null; selInterior = null;
+                    updatePreview(selCar.image, null);
+                    renderModelCards();
+                    btnNext.disabled = false;
+                    updateOverlay();
+                });
+            });
+        }
+
+        function renderColors() {
+            if (!selCar) return;
+            document.getElementById('color-swatches').innerHTML = selCar.colors.map((c, i) => `
+            <div class="color-swatch ${selColor === c ? 'selected' : ''}" data-idx="${i}">
+                <div class="swatch-dot" style="background:${c.hex}"></div>
+                <div class="swatch-text"><span class="sw-name">${c.name}</span><span class="sw-label">${c.label}</span></div>
+            </div>`).join('');
+            document.querySelectorAll('.color-swatch').forEach(el => {
+                el.addEventListener('click', () => {
+                    selColor = selCar.colors[+el.dataset.idx];
+                    updatePreview(null, selColor.fc);
+                    renderColors();
+                    btnNext.disabled = false;
+                    updateOverlay();
+                });
+            });
+        }
+
+        function renderWheels() {
+            if (!selCar) return;
+            document.getElementById('wheel-options').innerHTML = selCar.wheels.map((w, i) => `
+            <div class="wheel-opt ${selWheel === w ? 'selected' : ''}" data-idx="${i}">
+                <div class="wheel-icon"></div>
+                <div class="wheel-info"><div class="wh-name">${w.name}</div><div class="wh-desc">${w.desc}</div></div>
+            </div>`).join('');
+            document.querySelectorAll('.wheel-opt').forEach(el => {
+                el.addEventListener('click', () => {
+                    selWheel = selCar.wheels[+el.dataset.idx];
+                    renderWheels();
+                    btnNext.disabled = false;
+                    updateOverlay();
+                });
+            });
+        }
+
+        function renderInteriors() {
+            if (!selCar) return;
+            document.getElementById('interior-options').innerHTML = selCar.interiors.map((int, i) => `
+            <div class="int-opt ${selInterior === int ? 'selected' : ''}" data-idx="${i}">
+                <div class="int-swatch" style="background:${int.sw}"></div>
+                <div class="int-info"><div class="int-name">${int.name}</div><div class="int-mat">${int.mat}</div></div>
+            </div>`).join('');
+            document.querySelectorAll('.int-opt').forEach(el => {
+                el.addEventListener('click', () => {
+                    selInterior = selCar.interiors[+el.dataset.idx];
+                    renderInteriors();
+                    btnNext.disabled = false;
+                    updateOverlay();
+                });
+            });
+        }
+
+        function renderSummary() {
+            document.getElementById('summary-content').innerHTML = `
+            <div class="summary-car">${selCar?.name ?? '—'}</div>
+            <div class="summary-row"><span class="sum-label">Exterior</span><span class="sum-val">${selColor?.name ?? '—'}</span></div>
+            <div class="summary-row"><span class="sum-label">Wheels</span><span class="sum-val">${selWheel?.name ?? '—'}</span></div>
+            <div class="summary-row"><span class="sum-label">Interior</span><span class="sum-val">${selInterior?.name ?? '—'}</span></div>
+            <div class="summary-row"><span class="sum-label">Availability</span><span class="sum-val" style="color:var(--color-gold)">In Stock</span></div>
+            <div class="summary-cta">
+                <a href="contact.html" class="btn-request">Request This Configuration →</a>
+                <button class="btn-restart" id="btn-restart">Start Over</button>
+            </div>`;
+            document.getElementById('btn-restart')?.addEventListener('click', () => {
+                selCar = null; selColor = null; selWheel = null; selInterior = null;
+                updatePreview('assets/images/huracan_spyder_rear.jpg', null);
+                renderModelCards();
+                goTo(1);
+            });
+        }
+
+        btnPrev.addEventListener('click', () => {
+            if (step > 1) goTo(step - 1);
+            if (step === 2) renderColors();
+            if (step === 3) renderWheels();
+            if (step === 4) renderInteriors();
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (!currentSelection() && step < 5) {
+                noSelMsg.classList.add('show');
+                setTimeout(() => noSelMsg.classList.remove('show'), 2500);
+                return;
+            }
+            if (step < 5) {
+                goTo(step + 1);
+                if (step === 2) renderColors();
+                if (step === 3) renderWheels();
+                if (step === 4) renderInteriors();
+            }
+        });
+
+        renderModelCards();
+        updateProgress();
+        updateOverlay();
+    </script>
+    <script src="scripts.js?v=9"></script>
+</body>
+
+</html>

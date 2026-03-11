@@ -1,0 +1,381 @@
+/* ============================================
+   NEW ABOUT PAGE V2 — Visual-First Redesign
+   ============================================ */
+
+/* Hero V2 - Full Bleed Cinematic */
+.about-hero-v2 {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.about-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.05);
+}
+
+.about-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(10, 9, 8, 0.4) 0%, rgba(10, 9, 8, 0.7) 100%);
+}
+
+.about-hero-v2-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 5vw;
+}
+
+.about-tag {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    display: block;
+    margin-bottom: 3rem;
+}
+
+.about-mega-headline {
+    margin: 0;
+}
+
+.mega-line {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--color-cream);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.2em;
+}
+
+.mega-line.accent {
+    color: var(--color-gold);
+    font-style: italic;
+}
+
+/* Showcase - Horizontal Scroll */
+.about-showcase {
+    padding: 8vh 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.showcase-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0 8vw;
+}
+
+.showcase-item {
+    flex: 0 0 auto;
+    width: 400px;
+    position: relative;
+}
+
+.showcase-item img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.showcase-caption {
+    display: block;
+    margin-top: 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Manifesto V2 */
+.about-manifesto-v2 {
+    padding: 15vh 8vw;
+    text-align: center;
+}
+
+.manifesto-big {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--color-cream);
+    margin: 0 0 2rem;
+}
+
+.manifesto-big em {
+    color: var(--color-gold);
+    font-style: italic;
+}
+
+.manifesto-sub {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* Stats V2 - Animated */
+.about-stats-v2 {
+    padding: 10vh 8vw;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.stats-v2-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stat-v2 {
+    text-align: center;
+}
+
+.stat-v2-number {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    color: var(--color-gold);
+    display: block;
+    line-height: 1;
+}
+
+.stat-v2-unit {
+    font-size: 2rem;
+    color: var(--color-gold);
+}
+
+.stat-v2-label {
+    display: block;
+    margin-top: 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.4;
+}
+
+/* Approach Section */
+.about-approach {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 80vh;
+}
+
+.approach-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.approach-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.approach-content {
+    padding: 8vh 6vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.section-tag {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    margin-bottom: 3rem;
+}
+
+.approach-pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.pillar {
+    border-left: 2px solid rgba(201, 169, 110, 0.2);
+    padding-left: 2rem;
+}
+
+.pillar-num {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    color: var(--color-gold);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.pillar h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-cream);
+    margin: 0 0 0.5rem;
+}
+
+.pillar p {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* Team V2 */
+.about-team-v2 {
+    padding: 10vh 8vw;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.team-v2-header {
+    margin-bottom: 4rem;
+}
+
+.team-v2-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-v2-member {
+    text-align: center;
+}
+
+.member-v2-image {
+    aspect-ratio: 3/4;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.member-v2-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(201, 169, 110, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.team-v2-member h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--color-cream);
+    margin: 0 0 0.5rem;
+}
+
+.team-v2-member span {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+}
+
+/* CTA V2 - With Background */
+.about-cta-v2 {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cta-v2-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.cta-v2-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cta-v2-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 9, 8, 0.75);
+}
+
+.cta-v2-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 5vw;
+}
+
+.cta-v2-content h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 300;
+    color: var(--color-cream);
+    margin: 0 0 2.5rem;
+    line-height: 1.2;
+}
+
+.cta-v2-content h2 em {
+    color: var(--color-gold);
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .about-approach {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-v2-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .team-v2-grid {
+        grid-template-columns: 1fr;
+    }
+}
